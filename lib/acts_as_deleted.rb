@@ -20,6 +20,15 @@ module Acts #:nodoc:
       end
 
       module InstanceMethods
+        def delete
+          self.toggle(:deleted)
+        end
+        
+        def delete_with_user(user_id)
+          self.deleted = 1
+          self.deleter_id = user_id if self.respond_to?(:deleter_id)
+          self.save(false)
+        end
 
       end
     end
