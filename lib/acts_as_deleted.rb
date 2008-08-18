@@ -6,6 +6,22 @@ module Acts #:nodoc:
         base.extend(ClassMethods)
         base.send           :include, InstanceMethods
         base.before_validation_on_create  :undelete
+
+        if ! base.instance_methods.include?('acts_with_deleted') &&
+          base.instance_methods.include?('with_deleted')
+          base.class_eval do
+            alias_method :acts_with_deleted, :with_deleted
+            alias_method :with_deleted, :acts_with_deleted
+          end
+        end
+
+        if ! base.instance_methods.include?('acts_without_deleted') &&
+          base.instance_methods.include?('without_deleted')
+          base.class_eval do
+            alias_method :acts_without_deleted, :without_deleted
+            alias_method :without_deleted, :acts_without_deleted
+          end
+        end
       end
 
       module ClassMethods
@@ -24,14 +40,14 @@ module Acts #:nodoc:
           write_attribute('deleted', 0) if respond_to?(:deleted)
         end
         # set record as deleted
-        
+
         def delete
           t = self.class.default_timezone == :utc ? Time.now.utc : Time.now
           write_attribute('deleted', 1) if respond_to?(:deleted)
           write_attribute('deleted_at', t) if respond_to?(:deleted_at)
           self.save(false)
         end
-        
+
         # set record as deleted with user.
         # Compatible with restful-authentication
         def delete_with_user(user_id)
