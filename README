@@ -3,6 +3,8 @@ ActsAsDeleted
 
 Rails plugin to hide records instead of delete.
 
+Install plugin:
+script/plugin install git://github.com/kivanio/acts_as_deleted.git
 
 Example
 =======
