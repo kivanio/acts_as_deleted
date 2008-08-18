@@ -18,28 +18,27 @@ module Acts #:nodoc:
       end
 
       module InstanceMethods
-        private
-        
+
+        # Set record as undeleted
         def undelete
-          # self.deleted = 0 if self.respond_to?(:deleted)
           write_attribute('deleted', 0) if respond_to?(:deleted)
         end
+        # set record as deleted
         
         def delete
-          # self.toggle(:deleted)
           t = self.class.default_timezone == :utc ? Time.now.utc : Time.now
           write_attribute('deleted', 1) if respond_to?(:deleted)
           write_attribute('deleted_at', t) if respond_to?(:deleted_at)
           self.save(false)
         end
         
+        # set record as deleted with user.
+        # Compatible with restful-authentication
         def delete_with_user(user_id)
-           t = self.class.default_timezone == :utc ? Time.now.utc : Time.now
-            write_attribute('deleted', 1) if respond_to?(:deleted)
-            write_attribute('deleted_at', t) if respond_to?(:deleted_at)
-            write_attribute('deleted_id', t) if respond_to?(:deleted_id)
-          # self.deleted = 1
-          #           self.deleter_id = user_id if self.respond_to?(:deleter_id)
+          t = self.class.default_timezone == :utc ? Time.now.utc : Time.now
+          write_attribute('deleted_at', t) if respond_to?(:deleted_at)
+          write_attribute('deleted', 1) if respond_to?(:deleted)
+          write_attribute('deleted_id', user_id) if respond_to?(:deleted_id)
           self.save(false)
         end
 
