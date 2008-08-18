@@ -71,6 +71,16 @@ class CarController < ApplicationController
 
 end
 
+
+TIPS:
+
+To use validates_uniqueness_of with this plugin, you should use option :scope of validates_uniqueness_of.
+
+validates_uniqueness_of :name, :scope => :deleted
+
+Will be validated "name AND deleted" instead of only "name"
+
+
 Very simple!
 
 Like?
