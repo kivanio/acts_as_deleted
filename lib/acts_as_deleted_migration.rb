@@ -9,7 +9,7 @@ module Acts
         def deletestamps(include_deleted_id = false)
           column(:deleted, :boolean)
           column(:deleted_at, :datetime)
-          column(:deleted_id, :integer) if include_deleted_by
+          column(:deleted_id, :integer) if include_deleted_id
         end
       end
     end
