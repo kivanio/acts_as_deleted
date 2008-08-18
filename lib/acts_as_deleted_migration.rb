@@ -6,9 +6,10 @@ module Acts
       end
 
       module InstanceMethods
-        def deletestamps(include_deleted_by = false)
+        def deletestamps(include_deleted_id = false)
           column(:deleted, :boolean)
-          column(:deleter_id, :integer) if include_deleted_by
+          column(:deleted_at, :datetime)
+          column(:deleted_id, :integer) if include_deleted_by
         end
       end
     end
