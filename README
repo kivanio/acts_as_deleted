@@ -44,13 +44,18 @@ After that in your Controller:
 class CarController < ApplicationController
   
   # Use scope "without_deleted" to find normal records
-  def index
+  def normal_records
     @cars = Car.without_deleted.find :all
   end
   
-  # Use scope "with_deleted" to find normal records + deleted records
-  def all
+  # Use scope "with_deleted" to find deleted records
+  def deleted_records
     @cars = Car.with_deleted.find :all
+  end
+  
+  #User just find to all records
+  def all
+    @cars = car.find :all
   end
 
   # In destroy action use "delete" method to hide a record
