@@ -6,22 +6,6 @@ module Acts #:nodoc:
         base.extend(ClassMethods)
         base.send           :include, InstanceMethods
         base.before_validation_on_create  :undelete
-
-        if ! base.instance_methods.include?('acts_with_deleted') &&
-          base.instance_methods.include?('with_deleted')
-          base.class_eval do
-            alias_method :acts_with_deleted, :with_deleted
-            alias_method :with_deleted, :acts_with_deleted
-          end
-        end
-
-        if ! base.instance_methods.include?('acts_without_deleted') &&
-          base.instance_methods.include?('without_deleted')
-          base.class_eval do
-            alias_method :acts_without_deleted, :without_deleted
-            alias_method :without_deleted, :acts_without_deleted
-          end
-        end
       end
 
       module ClassMethods
