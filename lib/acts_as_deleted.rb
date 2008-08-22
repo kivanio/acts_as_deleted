@@ -1,24 +1,37 @@
 # ActsAsDeleted
 module Acts #:nodoc:
-  module As
-    module Deleted
+  module Deleted
+
+    def self.included(base) # :nodoc:
+      base.extend(ClassMethods)
+      base.before_validation_on_create  :undelete
+    end
+
+    module ClassMethods
+
+      # You can pass name of scope that you want to use
+      def acts_as_deleted(deleted=:with_deleted,not_deleted=:without_deleted)
+
+        # class << self  
+        #   alias_method :original_with_deleted, :with_deleted if method_defined?(:with_deleted)
+        #   alias_method :original_without_deleted, :without_deleted if method_defined?(:without_deleted)
+        # end
+
+        named_scope deleted, :conditions => {:deleted => true}
+        named_scope not_deleted, :conditions => {:deleted => false}
+
+        include InstanceMethods unless self.included_modules.include?(InstanceMethods)
+      end
+
+    end
+
+    module InstanceMethods
+
       def self.included(base) # :nodoc:
-        base.extend(ClassMethods)
-        base.send           :include, InstanceMethods
-        base.before_validation_on_create  :undelete
+        base.extend ClassMethods
       end
 
       module ClassMethods
-
-        def acts_as_deleted
-          self.named_scope :with_deleted, :conditions => {:deleted => true}
-          self.named_scope :without_deleted, :conditions => {:deleted => false}
-        end
-
-      end
-
-      module InstanceMethods
-
         # Set record as undeleted
         def undelete
           write_attribute('deleted', 0) if respond_to?(:deleted)
@@ -47,4 +60,4 @@ module Acts #:nodoc:
   end
 end
 
-ActiveRecord::Base.send(:include, Acts::As::Deleted) if defined?(ActiveRecord)
+ActiveRecord::Base.send(:include, Acts::Deleted) if defined?(ActiveRecord)

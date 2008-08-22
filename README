@@ -34,8 +34,11 @@ end
 In your model:
 
 class Car < ActiveRecord::Base
- 
+  # default names scopes: "with_deleted" and "without_deleted"
   acts_as_deleted
+  
+  # You can set names of scopes
+  acts_as_deleted(:deleteed,:no_deleteed)
 
 end
 
@@ -53,7 +56,17 @@ class CarController < ApplicationController
     @cars = Car.with_deleted.find :all
   end
   
-  #User just find to all records
+  # Use custom scope "deleteed" to find normal records
+  def normal_records
+    @cars = Car.deleteed.find :all
+  end
+  
+  # Use custom scope "no_deleteed" to find deleted records
+  def deleted_records
+    @cars = Car.no_deleteed.find :all
+  end
+  
+  #Use just normal find of rails to get all records
   def all
     @cars = car.find :all
   end
