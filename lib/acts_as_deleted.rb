@@ -4,12 +4,12 @@ module Acts #:nodoc:
 
     def self.included(base) # :nodoc:
       base.extend(ClassMethods)
-      base.before_validation_on_create  :undelete
     end
 
     module ClassMethods
       # You can pass name of scope that you want to use
       def acts_as_deleted(deleted=:with_deleted,not_deleted=:without_deleted)
+        base.before_validation_on_create  :undelete
         named_scope deleted, :conditions => {:deleted => true}
         named_scope not_deleted, :conditions => {:deleted => false}
         
