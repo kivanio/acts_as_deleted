@@ -1,0 +1,3 @@
+sqlite:
+  :adapter: sqlite
+  :dbfile: vendor/plugins/acts_as_deleted/test/acts_as_deleted_plugin.sqlite.db

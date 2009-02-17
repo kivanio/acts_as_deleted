@@ -1,10 +1,14 @@
 ActsAsDeleted
 =============
 
-Rails plugin to hide records instead of delete.
+This plugin is based on the original plugin by kivanio.
+
+Rails plugin to enable soft delete of records. Some fixes for callbacks (before_delete,
+after_delete, before_undelete, after_undelete) were added. Additionally most of the parts
+have got tests.
 
 Install plugin:
-script/plugin install git://github.com/kivanio/acts_as_deleted.git
+script/plugin install git://github.com/chlu/acts_as_deleted.git
 
 Example
 =======
@@ -17,7 +21,7 @@ class CreateCars < ActiveRecord::Migration
       t.string :name
 
       # Use "deletestamps" to create columns "deleted" and "deleted_at"
-      # With argument "true", will be create a column "deleted_id" to use with restful-authentication plugin
+      # With "true", a column "deleted_by" will be created to set an user id (e.g. with restful-authentication)
       t.deletestamps(true)
       
       t.timestamps
@@ -29,17 +33,19 @@ class CreateCars < ActiveRecord::Migration
   end
 end
 
-
-
 In your model:
 
 class Car < ActiveRecord::Base
-  # default names scopes: "with_deleted" and "without_deleted"
+  # Use default named scopes: "only_deleted" and "without_deleted"
   acts_as_deleted
-  
-  # You can set names of scopes
-  acts_as_deleted(:deleteed,:no_deleteed)
 
+  # You can use callbacks for delete and undelete just like other active record callbacks
+  after_delete :notify_someone
+
+protected
+  def notify_someone
+    logger.info('Your car has been deleted. Ouch.')
+  end
 end
 
 After that in your Controller:
@@ -47,30 +53,10 @@ After that in your Controller:
 class CarController < ApplicationController
   
   # Use scope "without_deleted" to find normal records
-  def normal_records
-    @cars = Car.without_deleted.find :all
+  def index
+    @cars = Car.without_deleted
   end
   
-  # Use scope "with_deleted" to find deleted records
-  def deleted_records
-    @cars = Car.with_deleted.find :all
-  end
-  
-  # Use custom scope "deleteed" to find normal records
-  def normal_records
-    @cars = Car.deleteed.find :all
-  end
-  
-  # Use custom scope "no_deleteed" to find deleted records
-  def deleted_records
-    @cars = Car.no_deleteed.find :all
-  end
-  
-  #Use just normal find of rails to get all records
-  def all
-    @cars = car.find :all
-  end
-
   # In destroy action use "delete" method to hide a record
   def destroy
    @car = Car.find(params[:id])
@@ -82,13 +68,18 @@ class CarController < ApplicationController
   
   # When you use plugin restful-authentication, you can use "delete_with_user" to save user
   def destroy_with_user
-     @car = Car.find(params[:id])
-      if @car.delete_with_user(current_user.id)
-        flash[:notice] = 'Bye Bye Car.'
-      end
-      redirect_to(cars_url)
+    @car = Car.find(params[:id])
+    if @car.delete_with_user(current_user.id)
+      flash[:notice] = 'Bye Bye Car.'
     end
-
+    redirect_to(cars_url)
+  end
+  
+  # A record can be undeleted
+  def undelete
+    @car = Car.find(params[:id])
+    @car.undelete
+  end
 end
 
 
