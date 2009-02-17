@@ -1,20 +1,27 @@
-ActsAsDeleted
-=============
+h1. acts_as_deleted
 
-This plugin is based on the original plugin by kivanio.
+This plugin is based on the original _acts_as_deleted_ plugin by _kivanio_.
 
-Rails plugin to enable soft delete of records. Some fixes for callbacks (before_delete,
-after_delete, before_undelete, after_undelete) were added. Additionally most of the parts
-have got tests.
+h2. What is it about?
 
-Install plugin:
+A Rails plugin to enable _soft deletion_ (with other words: hiding) of records.
+Some fixes for callbacks (@before_delete@, @after_delete@, @before_undelete@, @after_undelete@)
+were added. Additionally most of the parts have got tests now.
+
+h2. Installation:
+
+<pre>
 script/plugin install git://github.com/chlu/acts_as_deleted.git
+</pre>
 
-Example
-=======
+* Create migrations for your models to add the acts_as_deleted columns
+* Add @acts_as_deleted@ to your models
 
-In your migration:
+h2. Examples:
 
+h3. In your migration (for a new record):
+
+<pre>
 class CreateCars < ActiveRecord::Migration
   def self.up
     create_table :cars do |t|
@@ -32,9 +39,11 @@ class CreateCars < ActiveRecord::Migration
     drop_table :cars
   end
 end
+</pre>
 
-In your model:
+h3. In your model:
 
+<pre>
 class Car < ActiveRecord::Base
   # Use default named scopes: "only_deleted" and "without_deleted"
   acts_as_deleted
@@ -47,9 +56,11 @@ protected
     logger.info('Your car has been deleted. Ouch.')
   end
 end
+</pre>
 
-After that in your Controller:
+h3. In your Controller:
 
+<pre>
 class CarController < ApplicationController
   
   # Use scope "without_deleted" to find normal records
@@ -81,20 +92,22 @@ class CarController < ApplicationController
     @car.undelete
   end
 end
+</pre>
 
+h2. Tips:
 
-TIPS:
+To use @validates_uniqueness_of@ with this plugin, you should use the option @:scope@ of @validates_uniqueness_of@ to prevent unique conflicts with deleted records.
 
-To use validates_uniqueness_of with this plugin, you should use option :scope of validates_uniqueness_of.
-
+<pre>
 validates_uniqueness_of :name, :scope => :deleted
+</pre>
 
-Will be validated "name AND deleted" instead of only "name"
+The above example would validate "name AND deleted" instead of only "name".
 
+h2. Copyright
 
-Very simple!
+Copyright (c) 2009 [Christopher Hlubek] http://www.resoap.com, released under the MIT license
 
-Like?
-Recommend: http://www.workingwithrails.com/recommendation/new/person/5679-kivanio-pereira-barbosa
+Originally by:
 
-Copyright (c) 2008 [Kivanio Barbosa] http://www.kivanio.com.br , released under the MIT license
+Copyright (c) 2008 [Kivanio Barbosa] http://www.kivanio.com.br, released under the MIT license
