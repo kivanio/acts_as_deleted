@@ -15,3 +15,4 @@ module Acts
 end
 
 ActiveRecord::ConnectionAdapters::TableDefinition.send(:include, Acts::DeletedMigration)
+ActiveRecord::ConnectionAdapters::Table.send(:include, Acts::DeletedMigration)
