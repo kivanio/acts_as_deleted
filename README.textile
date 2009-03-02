@@ -108,6 +108,6 @@ h2. Copyright
 
 Copyright (c) 2009 [Christopher Hlubek] http://www.resoap.com, released under the MIT license
 
-Originally by:
+Copyright (c) 2009 [Jean Martin] http://www.code-schubser.de, released under the MIT license
 
 Copyright (c) 2008 [Kivanio Barbosa] http://www.kivanio.com.br, released under the MIT license
